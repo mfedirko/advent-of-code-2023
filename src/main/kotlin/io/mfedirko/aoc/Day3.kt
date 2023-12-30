@@ -11,7 +11,7 @@ object Day3 {
     }
 
     fun partTwo(): Int {
-        return InputReaderUtil.read("day3")
+        return InputReaderUtil.read("day3-test")
             .toList()
             .let { Schematic(it).gearRatios }
             .sum()
@@ -50,16 +50,20 @@ object Day3 {
             return rowRange.any { row -> colRange.any { col -> grid[row][col] !in nonSpecialChars } }
         }
 
-        private fun getBoundingRectangle(indexMatch: Pair<Int, MatchResult>): Pair<List<Int>, List<Int>> {
+        private fun getBoundingRectangle(indexMatch: Pair<Int, MatchResult>): Pair<IntRange, IntRange> {
             val rowRange = ((indexMatch.first - 1)..(indexMatch.first + 1)).filter { row -> row in grid.indices }
             val colRange = ((indexMatch.second.range.first - 1)..(indexMatch.second.range.last + 1)).filter { col -> col in grid[0].indices }
-            return rowRange to colRange
+            return rowRange.asIntRange() to colRange.asIntRange()
         }
     }
 }
 
-fun IntRange.isOverlappingWith(range: List<Int>): Boolean {
+fun IntRange.isOverlappingWith(range: IntRange): Boolean {
     return range.first() <= this.last && range.last() >= this.first
+}
+
+fun List<Int>.asIntRange(): IntRange {
+    return this.first()..this.last()
 }
 
 fun main() {
