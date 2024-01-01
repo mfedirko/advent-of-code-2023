@@ -1,5 +1,6 @@
 package io.mfedirko.aoc.day08
 
+import io.mfedirko.aoc.MathUtil.lcm
 import io.mfedirko.aoc.Solution
 import java.math.BigInteger
 
@@ -75,28 +76,6 @@ object Day8 : Solution<Long> {
                 return count
             }
         }
-    }
-
-    // least common multiple
-    private fun lcm(nums: Collection<Int>): Long {
-        var result = nums.elementAt(0).toBigInteger()
-        for (i in 1 until nums.size) {
-            result = lcm(result, nums.elementAt(i).toBigInteger())
-        }
-        return result.toLong()
-    }
-
-    private fun lcm(a: BigInteger, b: BigInteger): BigInteger {
-        val larger = if (a > b) a else b
-        val maxLcm = a * b
-        var lcm = larger
-        while (lcm <= maxLcm) {
-            if (lcm % a == BigInteger.ZERO && lcm % b == BigInteger.ZERO) {
-                return lcm
-            }
-            lcm += larger
-        }
-        return maxLcm
     }
 
     class TreeNode(val key: String, val left: () -> TreeNode, val right: () -> TreeNode) {
