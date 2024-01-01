@@ -1,5 +1,10 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day02
 
+import io.mfedirko.aoc.InputReaderUtil
+
+/**
+ * https://adventofcode.com/2023/day/2
+ */
 object Day2 {
     fun partOne(actual: Map<String, Int>): Int {
         return InputReaderUtil.read("day2")

@@ -1,7 +1,11 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day05
 
+import io.mfedirko.aoc.InputReaderUtil
 import kotlin.properties.Delegates
 
+/**
+ * https://adventofcode.com/2023/day/5
+ */
 object Day5 {
 
     fun partOne(seedsAsRange: Boolean = false): Long {

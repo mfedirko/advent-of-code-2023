@@ -1,5 +1,10 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day03
 
+import io.mfedirko.aoc.InputReaderUtil
+
+/**
+ * https://adventofcode.com/2023/day/3
+ */
 object Day3 {
     private val nonSpecialChars = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')
 

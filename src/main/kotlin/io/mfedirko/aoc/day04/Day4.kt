@@ -1,8 +1,12 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day04
 
+import io.mfedirko.aoc.InputReaderUtil
 import kotlin.math.pow
 import kotlin.properties.Delegates
 
+/**
+ * https://adventofcode.com/2023/day/4
+ */
 object Day4 {
 
     fun partOne(): Int {

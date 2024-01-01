@@ -1,5 +1,10 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day01
 
+import io.mfedirko.aoc.InputReaderUtil
+
+/**
+ * https://adventofcode.com/2023/day/1
+ */
 object Day1 {
     private val strToDigit = mapOf(
         Pair("one", 1), Pair("1", 1), Pair("two", 2), Pair("2", 2), Pair("three", 3), Pair("3", 3),
@@ -29,5 +34,5 @@ object Day1 {
 }
 
 fun main(args: Array<String>) {
-    println(Day1.partTwo())
+    println(Day1.partOne())
 }

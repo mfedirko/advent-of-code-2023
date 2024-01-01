@@ -1,5 +1,10 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day07
 
+import io.mfedirko.aoc.InputReaderUtil
+
+/**
+ * https://adventofcode.com/2023/day/7
+ */
 object Day7 {
 
     fun partOne(jokerAsWildCard: Boolean = false): Int {
@@ -113,6 +118,6 @@ object Day7 {
 }
 
 fun main(args: Array<String>) {
-    println(Day7.partTwo())
+    println(Day7.partOne())
 
 }

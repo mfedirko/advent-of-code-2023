@@ -1,5 +1,10 @@
-package io.mfedirko.aoc
+package io.mfedirko.aoc.day06
 
+import io.mfedirko.aoc.InputReaderUtil
+
+/**
+ * https://adventofcode.com/2023/day/6
+ */
 object Day6 {
     val numRegex = "\\d+".toRegex()
 
