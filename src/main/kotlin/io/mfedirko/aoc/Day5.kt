@@ -173,11 +173,10 @@ object Day5 {
         val endKey: Long = startKey + length - 1
 
         fun removeAll(keyMatches: Collection<KeyRange>): Collection<KeyRange> {
-            val sortedMatches = keyMatches.sortedBy { it.startKey }
             val gaps: MutableList<KeyRange> = mutableListOf()
             var curStart: Long
             var prevEnd = startKey
-            for (match in sortedMatches) {
+            for (match in keyMatches) {
                 curStart = match.startKey
                 if (prevEnd < curStart) {
                     gaps.add(KeyRange(prevEnd, toLength(prevEnd, curStart)))
