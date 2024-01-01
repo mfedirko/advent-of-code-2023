@@ -42,39 +42,47 @@ object Day8 : Solution<Long> {
 
         fun numSteps(input: Sequence<Char>): Long {
             if (parallel) {
-                var count = 0
-                val curNodes: MutableList<TreeNode> = nodes.values.filter { it.isStartNode }.toMutableList()
-                val nextNodes = mutableListOf<TreeNode>()
-                val stepsToEnd = MutableList(curNodes.size) {0}
-                while (stepsToEnd.any { it == 0 }) {
-                    for (dir: Char in input) {
-                        nextNodes.clear()
-                        for (curNode in curNodes) {
-                            val node = curNode.traverse(dir)
-                            nextNodes.add(node)
-                        }
-                        count++
-                        curNodes.clear()
-                        curNodes.addAll(nextNodes)
-                    }
-                    for (i in curNodes.indices) {
-                        if (curNodes[i].isEndNode && stepsToEnd[i] == 0) {
-                            stepsToEnd[i] = count
-                        }
-                    }
-                }
-                return lcm(stepsToEnd)
+                return numStepsPartTwo(input)
             } else {
-                var node = nodes["AAA"]!!
-                var count = 0L
-                while (node.key != "ZZZ") {
-                    for (dir: Char in input) {
-                        count++
-                        node = node.traverse(dir)
+                return numStepsPartOne(input)
+            }
+        }
+
+        private fun numStepsPartOne(input: Sequence<Char>): Long {
+            var node = nodes["AAA"]!!
+            var count = 0L
+            while (node.key != "ZZZ") {
+                for (dir: Char in input) {
+                    count++
+                    node = node.traverse(dir)
+                }
+            }
+            return count
+        }
+
+        private fun numStepsPartTwo(input: Sequence<Char>): Long {
+            var count = 0
+            val curNodes: MutableList<TreeNode> = nodes.values.filter { it.isStartNode }.toMutableList()
+            val nextNodes = mutableListOf<TreeNode>()
+            val stepsToEnd = MutableList(curNodes.size) { 0 }
+            while (stepsToEnd.any { it == 0 }) {
+                for (dir: Char in input) {
+                    nextNodes.clear()
+                    for (curNode in curNodes) {
+                        val node = curNode.traverse(dir)
+                        nextNodes.add(node)
+                    }
+                    count++
+                    curNodes.clear()
+                    curNodes.addAll(nextNodes)
+                }
+                for (i in curNodes.indices) {
+                    if (curNodes[i].isEndNode && stepsToEnd[i] == 0) {
+                        stepsToEnd[i] = count
                     }
                 }
-                return count
             }
+            return lcm(stepsToEnd)
         }
     }
 

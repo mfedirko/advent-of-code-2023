@@ -1,6 +1,5 @@
 package io.mfedirko.aoc.day07
 
-import io.mfedirko.aoc.InputReaderUtil
 import io.mfedirko.aoc.Solution
 
 /**
@@ -37,41 +36,49 @@ object Day7 : Solution<Int> {
 
         private fun determineHandType() = lazy {
             if (jokerAsWildCard) {
-                val (maxCount, maxType) = maxCountWithJoker()
-                with(countByCard(value, exclude = listOf('J', maxType)).values) {
-                    when {
-                        maxCount == 5 -> HandType.FIVE_OF_A_KIND
-
-                        maxCount == 4 -> HandType.FOUR_OF_A_KIND
-
-                        maxCount == 3 && any { it == 2 } -> HandType.FULL_HOUSE
-
-                        maxCount == 3 && any { it == 1 } -> HandType.THREE_OF_A_KIND
-
-                        maxCount == 2 && any { it == 2 } -> HandType.TWO_PAIR
-
-                        maxCount == 2 -> HandType.ONE_PAIR
-
-                        else -> HandType.HIGH_CARD
-                    }
-                }
+                return@lazy determineHandTypePartTwo()
             } else {
-                with(countByCard(value).values) {
-                    when {
-                        any { it == 5 } -> HandType.FIVE_OF_A_KIND
+                return@lazy determineHandTypePartOne()
+            }
+        }
 
-                        any { it == 4 } -> HandType.FOUR_OF_A_KIND
+        private fun determineHandTypePartOne(): HandType {
+            return with(countByCard(value).values) {
+                when {
+                    any { it == 5 } -> HandType.FIVE_OF_A_KIND
 
-                        any { it == 3 } && any { it == 2 } -> HandType.FULL_HOUSE
+                    any { it == 4 } -> HandType.FOUR_OF_A_KIND
 
-                        any { it == 3 } && any { it == 1 } -> HandType.THREE_OF_A_KIND
+                    any { it == 3 } && any { it == 2 } -> HandType.FULL_HOUSE
 
-                        count { it == 2 } == 2 -> HandType.TWO_PAIR
+                    any { it == 3 } && any { it == 1 } -> HandType.THREE_OF_A_KIND
 
-                        count { it == 2 } == 1 && count { it == 1 } == 3 -> HandType.ONE_PAIR
+                    count { it == 2 } == 2 -> HandType.TWO_PAIR
 
-                        else -> HandType.HIGH_CARD
-                    }
+                    count { it == 2 } == 1 && count { it == 1 } == 3 -> HandType.ONE_PAIR
+
+                    else -> HandType.HIGH_CARD
+                }
+            }
+        }
+
+        private fun determineHandTypePartTwo(): HandType {
+            val (maxCount, maxType) = maxCountWithJoker()
+            return with(countByCard(value, exclude = listOf('J', maxType)).values) {
+                when {
+                    maxCount == 5 -> HandType.FIVE_OF_A_KIND
+
+                    maxCount == 4 -> HandType.FOUR_OF_A_KIND
+
+                    maxCount == 3 && any { it == 2 } -> HandType.FULL_HOUSE
+
+                    maxCount == 3 && any { it == 1 } -> HandType.THREE_OF_A_KIND
+
+                    maxCount == 2 && any { it == 2 } -> HandType.TWO_PAIR
+
+                    maxCount == 2 -> HandType.ONE_PAIR
+
+                    else -> HandType.HIGH_CARD
                 }
             }
         }
