@@ -19,22 +19,24 @@ object Day5 {
     class InputParser(private val seedsAsRange: Boolean) {
         var currentSection: String by Delegates.notNull()
 
-        var seeds: List<Long> by Delegates.notNull()
-        var seedRanges: List<KeyRange> by Delegates.notNull()
+        private var seeds: List<Long> by Delegates.notNull()
+        private var seedRanges: List<KeyRange> by Delegates.notNull()
 
-        val seedToSoil: RangeMap = RangeMap()
-        val soilToFertilizer: RangeMap = RangeMap()
-        val fertilizerToWater: RangeMap = RangeMap()
-        val waterToLight: RangeMap = RangeMap()
-        val lightToTemp: RangeMap = RangeMap()
-        val tempToHumidity: RangeMap = RangeMap()
-        val humidityToLocation: RangeMap = RangeMap()
+        private val seedToSoil = RangeMap()
+        private val soilToFertilizer = RangeMap()
+        private val fertilizerToWater = RangeMap()
+        private val waterToLight = RangeMap()
+        private val lightToTemp = RangeMap()
+        private val tempToHumidity = RangeMap()
+        private val humidityToLocation = RangeMap()
 
         val almanac: Almanac by lazy {
             if (seedsAsRange) {
-                Almanac(seedRanges, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
+                Almanac(seedRanges, seedToSoil,
+                    soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
             } else {
-                Almanac(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
+                Almanac(seeds, seedToSoil,
+                    soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
             }
         }
 
