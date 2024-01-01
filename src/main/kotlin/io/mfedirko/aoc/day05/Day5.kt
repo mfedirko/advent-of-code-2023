@@ -1,6 +1,5 @@
 package io.mfedirko.aoc.day05
 
-import io.mfedirko.aoc.InputReaderUtil
 import kotlin.properties.Delegates
 
 /**
@@ -20,26 +19,17 @@ object Day5 {
     }
 
     class InputParser(private val seedsAsRange: Boolean) {
-        var currentSection: String by Delegates.notNull()
-
         private var seeds: List<Long> by Delegates.notNull()
         private var seedRanges: List<KeyRange> by Delegates.notNull()
 
-        private val seedToSoil = RangeMap()
-        private val soilToFertilizer = RangeMap()
-        private val fertilizerToWater = RangeMap()
-        private val waterToLight = RangeMap()
-        private val lightToTemp = RangeMap()
-        private val tempToHumidity = RangeMap()
-        private val humidityToLocation = RangeMap()
+        private val conversionList = mutableListOf<RangeMap>()
+        private var currentConversionMap = RangeMap()
 
         val almanac: Almanac by lazy {
             if (seedsAsRange) {
-                Almanac(seedRanges, seedToSoil,
-                    soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
+                Almanac(seedRanges, conversionList)
             } else {
-                Almanac(seeds, seedToSoil,
-                    soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation)
+                Almanac(seeds, conversionList)
             }
         }
 
@@ -52,7 +42,7 @@ object Day5 {
             }
         }
 
-        fun parseSeeds(line: String) {
+        private fun parseSeeds(line: String) {
             if (seedsAsRange) {
                 seedRanges = line.substringAfter("seeds: ").trim().split(" ").map { it.toLong() }
                     .chunked(2).map { KeyRange(it[0], it[1]) }
@@ -61,69 +51,42 @@ object Day5 {
             }
         }
 
-        fun parseSectionName(line: String) {
-            currentSection = line.substringBefore(" map")
+        private fun parseSectionName(line: String) {
+            currentConversionMap = RangeMap()
+            conversionList.add(currentConversionMap)
         }
 
-        fun parseSubRange(line: String) {
+        private fun parseSubRange(line: String) {
             val nums = line.split(" ").map { it.toLong() }
             val subRange = MappedSubRange(nums[1], nums[0], nums[2])
-            when(currentSection) {
-                "seed-to-soil" ->               seedToSoil.add(subRange)
-                "soil-to-fertilizer" ->         soilToFertilizer.add(subRange)
-                "fertilizer-to-water" ->        fertilizerToWater.add(subRange)
-                "water-to-light" ->             waterToLight.add(subRange)
-                "light-to-temperature" ->       lightToTemp.add(subRange)
-                "temperature-to-humidity" ->    tempToHumidity.add(subRange)
-                "humidity-to-location" ->       humidityToLocation.add(subRange)
-                else -> throw java.lang.IllegalStateException("Invalid currentSection: $currentSection")
-            }
+            currentConversionMap.add(subRange)
         }
-
     }
 
-    class Almanac(seeds: List<Long>,
-                  private val seedToSoil: RangeMap,
-                  private val soilToFertilizer: RangeMap,
-                  private val fertilizerToWater: RangeMap,
-                  private val waterToLight: RangeMap,
-                  private val lightToTemp: RangeMap,
-                  private val tempToHumidity: RangeMap,
-                  private val humidityToLocation: RangeMap) {
-
+    class Almanac(seeds: List<Long>, private val conversionList: List<RangeMap>) {
         private var seedsRange: Collection<KeyRange> by Delegates.notNull()
 
-        constructor(seeds: Collection<KeyRange>,
-                    seedToSoil: RangeMap,
-                    soilToFertilizer: RangeMap,
-                    fertilizerToWater: RangeMap,
-                    waterToLight: RangeMap,
-                    lightToTemp: RangeMap,
-                    tempToHumidity: RangeMap,
-                    humidityToLocation: RangeMap) : this(emptyList<Long>(), seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemp, tempToHumidity, humidityToLocation) {
+        constructor(seeds: Collection<KeyRange>, conversionList: List<RangeMap>)
+                : this(emptyList<Long>(), conversionList) {
             seedsRange = seeds
         }
 
         val lowestLocation: Long by lazy {
             if (seeds.isNotEmpty()) {
-                seeds.asSequence().map { seedToSoil.get(it) }
-                    .map { soilToFertilizer.get(it) }
-                    .map { fertilizerToWater.get(it) }
-                    .map { waterToLight.get(it) }
-                    .map { lightToTemp.get(it) }
-                    .map { tempToHumidity.get(it) }
-                    .map { humidityToLocation.get(it) }
-                    .min()
+                seeds.asSequence().map {
+                    conversionList.fold(it) {
+                            acc, rangeMap -> rangeMap.get(acc)
+                    }
+                }.min()
             } else {
-                seedsRange.asSequence().flatMap { seedToSoil.get(it) }
-                    .flatMap { soilToFertilizer.get(it) }
-                    .flatMap { fertilizerToWater.get(it) }
-                    .flatMap { waterToLight.get(it) }
-                    .flatMap { lightToTemp.get(it) }
-                    .flatMap { tempToHumidity.get(it) }
-                    .flatMap { humidityToLocation.get(it) }
-                    .map { it.startKey }
-                    .min()
+                seedsRange.asSequence().flatMap {
+                    conversionList.fold(listOf(it)) {
+                        acc, rangeMap -> acc.flatMap {
+                            keyRange -> rangeMap.get(keyRange)
+                        }
+                    }
+                }.map { it.startKey }
+                 .min()
             }
         }
      }
