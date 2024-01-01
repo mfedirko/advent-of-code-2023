@@ -23,42 +23,44 @@ object Day7 {
 
 
     class Hand(private val value: String, private val jokerAsWildCard: Boolean): Comparable<Hand> {
-        private val type: CardType by lazy {
+        private val type: HandType by determineHandType()
+
+        private fun determineHandType() = lazy {
             if (jokerAsWildCard) {
                 val (maxCount, maxType) = maxCountWithJoker()
                 with(countByCard(value, exclude = listOf('J', maxType)).values) {
                     when {
-                        maxCount == 5 -> CardType.FIVE_OF_A_KIND
+                        maxCount == 5 -> HandType.FIVE_OF_A_KIND
 
-                        maxCount == 4 -> CardType.FOUR_OF_A_KIND
+                        maxCount == 4 -> HandType.FOUR_OF_A_KIND
 
-                        maxCount == 3 && any { it == 2 } -> CardType.FULL_HOUSE
+                        maxCount == 3 && any { it == 2 } -> HandType.FULL_HOUSE
 
-                        maxCount == 3 && any { it == 1 } -> CardType.THREE_OF_A_KIND
+                        maxCount == 3 && any { it == 1 } -> HandType.THREE_OF_A_KIND
 
-                        maxCount == 2 && any { it == 2 } -> CardType.TWO_PAIR
+                        maxCount == 2 && any { it == 2 } -> HandType.TWO_PAIR
 
-                        maxCount == 2 -> CardType.ONE_PAIR
+                        maxCount == 2 -> HandType.ONE_PAIR
 
-                        else -> CardType.HIGH_CARD
+                        else -> HandType.HIGH_CARD
                     }
                 }
             } else {
                 with(countByCard(value).values) {
                     when {
-                        any { it == 5 } -> CardType.FIVE_OF_A_KIND
+                        any { it == 5 } -> HandType.FIVE_OF_A_KIND
 
-                        any { it == 4 } -> CardType.FOUR_OF_A_KIND
+                        any { it == 4 } -> HandType.FOUR_OF_A_KIND
 
-                        any { it == 3 } && any { it == 2 } -> CardType.FULL_HOUSE
+                        any { it == 3 } && any { it == 2 } -> HandType.FULL_HOUSE
 
-                        any { it == 3 } && any { it == 1 } -> CardType.THREE_OF_A_KIND
+                        any { it == 3 } && any { it == 1 } -> HandType.THREE_OF_A_KIND
 
-                        count { it == 2 } == 2 -> CardType.TWO_PAIR
+                        count { it == 2 } == 2 -> HandType.TWO_PAIR
 
-                        count { it == 2 } == 1 && count { it == 1 } == 3 -> CardType.ONE_PAIR
+                        count { it == 2 } == 1 && count { it == 1 } == 3 -> HandType.ONE_PAIR
 
-                        else -> CardType.HIGH_CARD
+                        else -> HandType.HIGH_CARD
                     }
                 }
             }
@@ -99,7 +101,7 @@ object Day7 {
         }
     }
 
-    enum class CardType {
+    enum class HandType {
         FIVE_OF_A_KIND,
         FOUR_OF_A_KIND,
         FULL_HOUSE,
