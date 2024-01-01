@@ -1,6 +1,5 @@
 package io.mfedirko.aoc.day01
 
-import io.mfedirko.aoc.InputReaderUtil
 
 /**
  * https://adventofcode.com/2023/day/1
@@ -14,14 +13,14 @@ object Day1 {
 
     private val allDigits = strToDigit.keys
 
-    fun partOne(): Int {
-        return InputReaderUtil.read("day1")
+    fun partOne(input: Sequence<String>): Int {
+        return input
             .map { it.first { ch -> ch.isDigit() }.digitToInt() * 10 + it.last { ch -> ch.isDigit() }.digitToInt() }
             .sum()
     }
 
-    fun partTwo(): Int {
-        return InputReaderUtil.read("day1")
+    fun partTwo(input: Sequence<String>): Int {
+        return input
             .map { toInt(it.findAnyOf(allDigits)!!) * 10 + toInt(it.findLastAnyOf(allDigits)!!) }
             .sum()
     }
@@ -31,8 +30,4 @@ object Day1 {
     }
 
 
-}
-
-fun main(args: Array<String>) {
-    println(Day1.partOne())
 }

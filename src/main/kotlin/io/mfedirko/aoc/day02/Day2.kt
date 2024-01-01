@@ -6,16 +6,16 @@ import io.mfedirko.aoc.InputReaderUtil
  * https://adventofcode.com/2023/day/2
  */
 object Day2 {
-    fun partOne(actual: Map<String, Int>): Int {
-        return InputReaderUtil.read("day2")
+    fun partOne(input: Sequence<String>, actual: Map<String, Int>): Int {
+        return input
             .map { parseGame(it) }
             .filter { it.isPossible(actual) }
             .map { it.id }
             .sum()
     }
 
-    fun partTwo(): Int {
-        return InputReaderUtil.read("day2")
+    fun partTwo(input: Sequence<String>): Int {
+        return input
             .map { parseGame(it) }
             .map { it.toPower() }
             .sum()
@@ -47,6 +47,3 @@ object Day2 {
     }
 }
 
-fun main() {
-    println(Day2.partTwo())
-}

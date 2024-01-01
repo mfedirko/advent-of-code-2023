@@ -8,15 +8,15 @@ import io.mfedirko.aoc.InputReaderUtil
 object Day6 {
     val numRegex = "\\d+".toRegex()
 
-    fun partOne(): Long {
-        return InputReaderUtil.read("day6")
+    fun partOne(input: Sequence<String>): Long {
+        return input
                 .toList()
                 .let { parse(it).waysToWin() }
                 .fold(1) { acc, next -> acc * next }
     }
 
-    fun partTwo(): Long {
-        return InputReaderUtil.read("day6")
+    fun partTwo(input: Sequence<String>): Long {
+        return input
                 .toList()
                 .let { parseV2(it).waysToWin() }.first().toLong()
     }
@@ -48,8 +48,4 @@ object Day6 {
             }
         }
     }
-}
-
-fun main(args: Array<String>) {
-    println(Day6.partTwo())
 }

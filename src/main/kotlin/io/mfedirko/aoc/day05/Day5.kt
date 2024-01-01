@@ -8,16 +8,15 @@ import kotlin.properties.Delegates
  */
 object Day5 {
 
-    fun partOne(seedsAsRange: Boolean = false): Long {
+    fun partOne(input: Sequence<String>, seedsAsRange: Boolean = false): Long {
         with(InputParser(seedsAsRange)) {
-            InputReaderUtil.read("day5")
-                .forEach { parseNext(it) }
+            input.forEach { parseNext(it) }
             return almanac.lowestLocation
         }
     }
 
-    fun partTwo(): Long {
-        return partOne(true)
+    fun partTwo(input: Sequence<String>): Long {
+        return partOne(input, seedsAsRange = true)
     }
 
     class InputParser(private val seedsAsRange: Boolean) {
@@ -201,8 +200,4 @@ object Day5 {
             }
         }
     }
-}
-
-fun main(args: Array<String>) {
-    println(Day5.partTwo())
 }

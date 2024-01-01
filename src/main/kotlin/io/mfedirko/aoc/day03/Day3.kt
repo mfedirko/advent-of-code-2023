@@ -8,15 +8,15 @@ import io.mfedirko.aoc.InputReaderUtil
 object Day3 {
     private val nonSpecialChars = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')
 
-    fun partOne(): Int {
-        return InputReaderUtil.read("day3")
+    fun partOne(input: Sequence<String>): Int {
+        return input
             .toList()
             .let { Schematic(it).partNumbers }
             .sum()
     }
 
-    fun partTwo(): Int {
-        return InputReaderUtil.read("day3-test")
+    fun partTwo(input: Sequence<String>): Int {
+        return input
             .toList()
             .let { Schematic(it).gearRatios }
             .sum()
@@ -69,8 +69,4 @@ fun IntRange.isOverlappingWith(range: IntRange): Boolean {
 
 fun List<Int>.asIntRange(): IntRange {
     return this.first()..this.last()
-}
-
-fun main() {
-    println(Day3.partTwo())
 }

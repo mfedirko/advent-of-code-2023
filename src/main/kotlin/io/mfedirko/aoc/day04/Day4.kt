@@ -9,13 +9,13 @@ import kotlin.properties.Delegates
  */
 object Day4 {
 
-    fun partOne(): Int {
-        return InputReaderUtil.read("day4")
+    fun partOne(input: Sequence<String>): Int {
+        return input
             .map { parseScratchCard(it).pointValue }
             .sum()
     }
-    fun partTwo(): Int {
-        return InputReaderUtil.read("day4")
+    fun partTwo(input: Sequence<String>): Int {
+        return input
             .map { parseScratchCard(it) }
             .toList()
             .sumOf { it.countExpanded + 1 }
@@ -57,8 +57,4 @@ object Day4 {
 
 
 
-}
-
-fun main(args: Array<String>) {
-    println(Day4.partTwo())
 }

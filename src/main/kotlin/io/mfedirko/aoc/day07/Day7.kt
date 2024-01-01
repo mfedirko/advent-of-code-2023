@@ -7,8 +7,8 @@ import io.mfedirko.aoc.InputReaderUtil
  */
 object Day7 {
 
-    fun partOne(jokerAsWildCard: Boolean = false): Int {
-        return InputReaderUtil.read("day7")
+    fun partOne(input: Sequence<String>, jokerAsWildCard: Boolean = false): Int {
+        return input
             .map { parseHandBid(it) }
             .sortedByDescending { Hand(it.first, jokerAsWildCard) }
             .mapIndexed { index, pair -> (index + 1) * pair.second }
@@ -16,8 +16,8 @@ object Day7 {
 
     }
 
-    fun partTwo(): Int {
-        return partOne(true)
+    fun partTwo(input: Sequence<String>): Int {
+        return partOne(input, jokerAsWildCard = true)
 
     }
 
@@ -115,9 +115,4 @@ object Day7 {
         ONE_PAIR,
         HIGH_CARD;
     }
-}
-
-fun main(args: Array<String>) {
-    println(Day7.partOne())
-
 }
