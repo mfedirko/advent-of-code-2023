@@ -1,21 +1,22 @@
 package io.mfedirko.aoc.day06
 
-import io.mfedirko.aoc.InputReaderUtil
+import io.mfedirko.aoc.Solution
+
 
 /**
  * https://adventofcode.com/2023/day/6
  */
-object Day6 {
+object Day6 : Solution<Long> {
     val numRegex = "\\d+".toRegex()
 
-    fun partOne(input: Sequence<String>): Long {
+    override fun partOne(input: Sequence<String>): Long {
         return input
                 .toList()
                 .let { parse(it).waysToWin() }
                 .fold(1) { acc, next -> acc * next }
     }
 
-    fun partTwo(input: Sequence<String>): Long {
+    override fun partTwo(input: Sequence<String>): Long {
         return input
                 .toList()
                 .let { parseV2(it).waysToWin() }.first().toLong()

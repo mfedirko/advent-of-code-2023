@@ -1,11 +1,12 @@
 package io.mfedirko.aoc.day07
 
 import io.mfedirko.aoc.InputReaderUtil
+import io.mfedirko.aoc.Solution
 
 /**
  * https://adventofcode.com/2023/day/7
  */
-object Day7 {
+object Day7 : Solution<Int> {
 
     fun partOne(input: Sequence<String>, jokerAsWildCard: Boolean = false): Int {
         return input
@@ -16,7 +17,11 @@ object Day7 {
 
     }
 
-    fun partTwo(input: Sequence<String>): Int {
+    override fun partOne(input: Sequence<String>): Int {
+        return partOne(input, false)
+    }
+
+    override fun partTwo(input: Sequence<String>): Int {
         return partOne(input, jokerAsWildCard = true)
 
     }

@@ -1,21 +1,22 @@
 package io.mfedirko.aoc.day03
 
-import io.mfedirko.aoc.InputReaderUtil
+import io.mfedirko.aoc.Solution
+
 
 /**
  * https://adventofcode.com/2023/day/3
  */
-object Day3 {
+object Day3 : Solution<Int> {
     private val nonSpecialChars = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')
 
-    fun partOne(input: Sequence<String>): Int {
+    override fun partOne(input: Sequence<String>): Int {
         return input
             .toList()
             .let { Schematic(it).partNumbers }
             .sum()
     }
 
-    fun partTwo(input: Sequence<String>): Int {
+    override fun partTwo(input: Sequence<String>): Int {
         return input
             .toList()
             .let { Schematic(it).gearRatios }

@@ -1,20 +1,21 @@
 package io.mfedirko.aoc.day02
 
-import io.mfedirko.aoc.InputReaderUtil
+import io.mfedirko.aoc.Solution
 
 /**
  * https://adventofcode.com/2023/day/2
  */
-object Day2 {
-    fun partOne(input: Sequence<String>, actual: Map<String, Int>): Int {
+object Day2 : Solution<Int> {
+    override fun partOne(input: Sequence<String>): Int {
+        val actualCounts = mapOf("red" to 12, "green" to 13, "blue" to 14)
         return input
             .map { parseGame(it) }
-            .filter { it.isPossible(actual) }
+            .filter { it.isPossible(actualCounts) }
             .map { it.id }
             .sum()
     }
 
-    fun partTwo(input: Sequence<String>): Int {
+    override fun partTwo(input: Sequence<String>): Int {
         return input
             .map { parseGame(it) }
             .map { it.toPower() }

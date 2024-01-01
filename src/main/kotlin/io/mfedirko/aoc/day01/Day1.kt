@@ -1,10 +1,12 @@
 package io.mfedirko.aoc.day01
 
+import io.mfedirko.aoc.Solution
+
 
 /**
  * https://adventofcode.com/2023/day/1
  */
-object Day1 {
+object Day1 : Solution<Int> {
     private val strToDigit = mapOf(
         Pair("one", 1), Pair("1", 1), Pair("two", 2), Pair("2", 2), Pair("three", 3), Pair("3", 3),
         Pair("four", 4), Pair("4", 4), Pair("five", 5), Pair("5", 5), Pair("six", 6), Pair("6", 6),
@@ -13,13 +15,13 @@ object Day1 {
 
     private val allDigits = strToDigit.keys
 
-    fun partOne(input: Sequence<String>): Int {
+    override fun partOne(input: Sequence<String>): Int {
         return input
             .map { it.first { ch -> ch.isDigit() }.digitToInt() * 10 + it.last { ch -> ch.isDigit() }.digitToInt() }
             .sum()
     }
 
-    fun partTwo(input: Sequence<String>): Int {
+    override fun partTwo(input: Sequence<String>): Int {
         return input
             .map { toInt(it.findAnyOf(allDigits)!!) * 10 + toInt(it.findLastAnyOf(allDigits)!!) }
             .sum()

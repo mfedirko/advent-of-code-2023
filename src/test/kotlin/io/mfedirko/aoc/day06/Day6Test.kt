@@ -1,28 +1,18 @@
 package io.mfedirko.aoc.day06
 
-import io.mfedirko.aoc.InputReaderUtil
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import io.mfedirko.aoc.Solution
+import io.mfedirko.aoc.SolutionTest
 
-internal class Day6Test {
-    @Test
-    fun testPartOne() {
-        assertEquals(288, Day6.partOne(InputReaderUtil.read("day6-test")))
-    }
+internal class Day6Test : SolutionTest<Day6, Long>() {
+    override val solution: Solution<Long>
+        get() = Day6
+    override val expectedTestPartOne: Long
+        get() = 288
+    override val expectedPartOne: Long
+        get() = 2612736
+    override val expectedTestPartTwo: Long
+        get() = 71503
+    override val expectedPartTwo: Long
+        get() = 29891250
 
-    @Test
-    fun partOne() {
-        assertEquals(2612736, Day6.partOne(InputReaderUtil.read("day6")))
-    }
-
-    @Test
-    fun testPartTwo() {
-        assertEquals(71503, Day6.partTwo(InputReaderUtil.read("day6-test")))
-    }
-
-
-    @Test
-    fun partTwo() {
-        assertEquals(29891250, Day6.partTwo(InputReaderUtil.read("day6")))
-    }
 }

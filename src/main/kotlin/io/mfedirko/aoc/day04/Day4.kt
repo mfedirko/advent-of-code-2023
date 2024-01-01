@@ -1,20 +1,20 @@
 package io.mfedirko.aoc.day04
 
-import io.mfedirko.aoc.InputReaderUtil
+import io.mfedirko.aoc.Solution
 import kotlin.math.pow
-import kotlin.properties.Delegates
 
 /**
  * https://adventofcode.com/2023/day/4
  */
-object Day4 {
+object Day4: Solution<Int> {
 
-    fun partOne(input: Sequence<String>): Int {
+    override fun partOne(input: Sequence<String>): Int {
         return input
             .map { parseScratchCard(it).pointValue }
             .sum()
     }
-    fun partTwo(input: Sequence<String>): Int {
+
+    override fun partTwo(input: Sequence<String>): Int {
         return input
             .map { parseScratchCard(it) }
             .toList()
