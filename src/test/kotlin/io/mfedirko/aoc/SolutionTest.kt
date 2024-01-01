@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 
-abstract class SolutionTest<I, O> where I : Solution<O> {
-    abstract val solution: Solution<O>
-    abstract val expectedTestPartOne: O
-    abstract val expectedPartOne: O
-    abstract val expectedTestPartTwo: O
-    abstract val expectedPartTwo: O
+abstract class SolutionTest<CLZ, OUT> where CLZ : Solution<OUT> {
+    abstract val solution: Solution<OUT>
+    abstract val expectedTestPartOne: OUT
+    abstract val expectedPartOne: OUT
+    abstract val expectedTestPartTwo: OUT
+    abstract val expectedPartTwo: OUT
 
     private val solutionFileName = solution::class.simpleName!!.lowercase()
     open var testPartOneInput: String = "$solutionFileName-test"
