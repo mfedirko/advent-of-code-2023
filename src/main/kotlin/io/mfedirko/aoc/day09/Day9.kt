@@ -4,33 +4,26 @@ import io.mfedirko.aoc.Solution
 
 object Day9 : Solution<Int> {
     override fun partOne(input: Sequence<String>): Int {
-        return input
-            .map { parseIntList(it) }
-            .map { extrapolateNextInt(it) }
-            .sum()
+        return extrapolateAndSum(input) { diff, seq ->
+            seq.last() + diff
+        }
     }
 
     override fun partTwo(input: Sequence<String>): Int {
+        return extrapolateAndSum(input) { diff, seq ->
+            seq.first() - diff
+        }
+    }
+
+    private fun extrapolateAndSum(input: Sequence<String>, diffMapper: (Int, List<Int>) -> Int): Int {
         return input
             .map { parseIntList(it) }
-            .map { extrapolatePrevInt(it) }
+            .map { extrapolate(it, diffMapper) }
             .sum()
     }
 
     private fun parseIntList(line: String): List<Int> {
         return line.split(" ").map { it.toInt() }
-    }
-
-    private fun extrapolateNextInt(list: List<Int>): Int {
-        return extrapolate(list) {
-                diff: Int, ints: List<Int> -> ints.last() + diff
-        }
-    }
-
-    private fun extrapolatePrevInt(list: List<Int>): Int {
-        return extrapolate(list) {
-                diff: Int, ints: List<Int> -> ints.first() - diff
-        }
     }
 
     private fun extrapolate(list: List<Int>, diffMapper: (Int, List<Int>) -> Int): Int {
