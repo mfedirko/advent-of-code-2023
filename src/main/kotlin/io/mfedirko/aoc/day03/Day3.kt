@@ -32,7 +32,7 @@ object Day3 : Solution<Int> {
         init {
             partNumbers = findAll(numberRegex)
                 .filter { isBoundedBySpecialChars(it) }
-                .map { it.second.value.toInt() }
+                .map { (_, match) -> match.value.toInt() }
 
             gearRatios = findAll(gearRegex)
                 .map { getBoundingNumbers(it) }
@@ -57,8 +57,9 @@ object Day3 : Solution<Int> {
         }
 
         private fun getBoundingRectangle(indexMatch: Pair<Int, MatchResult>): Pair<IntRange, IntRange> {
-            val rowRange = ((indexMatch.first - 1)..(indexMatch.first + 1)).filter { row -> row in grid.indices }
-            val colRange = ((indexMatch.second.range.first - 1)..(indexMatch.second.range.last + 1)).filter { col -> col in grid[0].indices }
+            val (index, match) = indexMatch
+            val rowRange = ((index - 1)..(index + 1)).filter { row -> row in grid.indices }
+            val colRange = ((match.range.first - 1)..(match.range.last + 1)).filter { col -> col in grid[0].indices }
             return rowRange.asIntRange() to colRange.asIntRange()
         }
     }

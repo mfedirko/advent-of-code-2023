@@ -10,8 +10,8 @@ object Day7 : Solution<Int> {
     fun partOne(input: Sequence<String>, jokerAsWildCard: Boolean = false): Int {
         return input
             .map { parseHandBid(it) }
-            .sortedByDescending { Hand(it.first, jokerAsWildCard) }
-            .mapIndexed { index, pair -> (index + 1) * pair.second }
+            .sortedByDescending { (hand, _) -> Hand(hand, jokerAsWildCard) }
+            .mapIndexed { index, (_, bid) -> (index + 1) * bid }
             .sum()
 
     }
@@ -36,9 +36,9 @@ object Day7 : Solution<Int> {
 
         private fun determineHandType() = lazy {
             if (jokerAsWildCard) {
-                return@lazy determineHandTypePartTwo()
+                determineHandTypePartTwo()
             } else {
-                return@lazy determineHandTypePartOne()
+                determineHandTypePartOne()
             }
         }
 

@@ -10,12 +10,12 @@ import java.math.BigInteger
 object Day8 : Solution<Long> {
     override fun partOne(input: Sequence<String>): Long {
         return buildTree(input.toList())
-            .let { it.second.numSteps(it.first.asSequence()) }
+            .let { (dirs, tree) -> tree.numSteps(dirs.asSequence()) }
     }
 
     override fun partTwo(input: Sequence<String>): Long {
         return buildTree(input.toList(), parallel = true)
-            .let { it.second.numSteps(it.first.asSequence()) }
+            .let { (dirs, tree) -> tree.numSteps(dirs.asSequence()) }
     }
 
     fun buildTree(input: List<String>, parallel: Boolean = false): Pair<String, Tree> {
@@ -41,10 +41,10 @@ object Day8 : Solution<Long> {
         }
 
         fun numSteps(input: Sequence<Char>): Long {
-            if (parallel) {
-                return numStepsPartTwo(input)
+            return if (parallel) {
+                numStepsPartTwo(input)
             } else {
-                return numStepsPartOne(input)
+                numStepsPartOne(input)
             }
         }
 
