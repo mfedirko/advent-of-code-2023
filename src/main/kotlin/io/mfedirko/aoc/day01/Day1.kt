@@ -8,9 +8,9 @@ import io.mfedirko.aoc.Solution
  */
 object Day1 : Solution<Int> {
     private val strToDigit = mapOf(
-        Pair("one", 1), Pair("1", 1), Pair("two", 2), Pair("2", 2), Pair("three", 3), Pair("3", 3),
-        Pair("four", 4), Pair("4", 4), Pair("five", 5), Pair("5", 5), Pair("six", 6), Pair("6", 6),
-        Pair("seven", 7), Pair("7", 7), Pair("eight", 8), Pair("8", 8), Pair("nine", 9), Pair("9", 9)
+        "one" to 1, "1" to 1, "two" to 2, "2" to 2, "three" to 3, "3" to 3,
+        "four" to 4, "4" to 4, "five" to 5, "5" to 5, "six" to 6, "6" to 6,
+        "seven" to 7, "7" to 7, "eight" to 8, "8" to 8, "nine" to 9, "9" to 9
     )
 
     private val allDigits = strToDigit.keys
@@ -30,6 +30,4 @@ object Day1 : Solution<Int> {
     private fun toInt(pair: Pair<Int, String>): Int {
         return strToDigit[pair.second]!!
     }
-
-
 }
