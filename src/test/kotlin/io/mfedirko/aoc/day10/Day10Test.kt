@@ -12,9 +12,9 @@ internal class Day10Test : SolutionTest<Day10, Int>() {
     override val expectedPartOne: Int
         get() = 6701
     override val expectedTestPartTwo: Int
-        get() = 8
+        get() = 10
     override val expectedPartTwo: Int
-        get() = -1
+        get() = 303
 
     override var testPartTwoInput: String
         get() = "day10-test2"
