@@ -8,20 +8,19 @@ private const val SPACE_SYMBOL = '.'
 
 object Day11: Solution<Long> {
     override fun partOne(input: Sequence<String>): Long {
-        return input.toList()
-            .let { expandEmptySpace(it) }
-            .let { findGalaxies(it) }
-            .let { allCombinations(it) }
-            .fold(0) { acc, pair ->
-                acc + pair.first.manhattanDistanceTo(pair.second)
-            }
+        return solve(input, 2)
+
     }
 
     override fun partTwo(input: Sequence<String>): Long {
+        return solve(input, 1_000_000)
+    }
+
+    private fun solve(input: Sequence<String>, expansionFactor: Long): Long {
         val image = input.toList()
         return image
             .let { findGalaxies(it) }
-            .let { addEmptySpace(it, emptyRows(image), emptyColumns(image), expansionFactor = 1_000_000) }
+            .let { addEmptySpace(it, emptyRows(image), emptyColumns(image), expansionFactor = expansionFactor) }
             .let { allCombinations(it) }
             .fold(0L) { acc, pair ->
                 acc + pair.first.manhattanDistanceTo(pair.second)
@@ -35,18 +34,6 @@ object Day11: Solution<Long> {
             y += emptyRows.filter { i -> i < y }.count() * (expansionFactor - 1)
             Coord(y, x)
         }.toList()
-    }
-
-    private fun expandEmptySpace(image: List<String>): List<String> {
-        val emptyColumns = emptyColumns(image)
-        val emptyRows = emptyRows(image)
-        return image.flatMapIndexed { i, row ->
-                row.mapIndexed { j, c ->
-                        if (emptyColumns.contains(j)) "${c}${c}" else "$c" }.joinToString("") // expand col
-                    .let {
-                        if (emptyRows.contains(i)) listOf(it, it) else listOf(it)  // expand row
-                    }
-        }
     }
 
     private fun emptyColumns(image: List<String>): Set<Int> {
