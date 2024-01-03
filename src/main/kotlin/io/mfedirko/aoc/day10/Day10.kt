@@ -140,7 +140,7 @@ object Day10 : Solution<Int> {
             }
         }
 
-        fun maxDistance(): Pair<Int, Set<Coord>> {
+        internal fun maxDistance(): Pair<Int, Set<Coord>> {
             val queue: Queue<Coord> = LinkedList()
             val visitedPipes = mutableSetOf<Coord>()
             queue.add(start)
@@ -168,7 +168,7 @@ object Day10 : Solution<Int> {
         }
     }
 
-    class Coord(val y: Int, val x: Int, var dist: Int, val shape: Shape) {
+    internal class Coord(val y: Int, val x: Int, var dist: Int, val shape: Shape) {
 
         fun directionTo(coord: Coord): Direction {
             return when {
