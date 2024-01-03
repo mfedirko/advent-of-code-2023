@@ -1,5 +1,6 @@
 package io.mfedirko.aoc.day11
 
+import io.mfedirko.aoc.CollectionUtil.allCombinations
 import io.mfedirko.aoc.Solution
 import kotlin.math.abs
 
@@ -51,15 +52,6 @@ object Day11: Solution<Long> {
             }.map { x -> Coord(y.toLong(), x.toLong()) }
             .asSequence()
         }
-    }
-
-    private fun allCombinations(coords: List<Coord>): Set<Pair<Coord, Coord>> {
-        return coords.flatMap {first ->
-                        coords.filter {second -> second != first}
-                          .map {second ->
-                                if (first < second) first to second else second to first
-                          }
-                    }.toSet()
     }
 
     internal data class Coord(val y: Long, val x: Long): Comparable<Coord> {
