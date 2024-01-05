@@ -12,8 +12,8 @@ internal class Day13Test: SolutionTest<Day13, Int>() {
     override val expectedPartOne: Int
         get() = 31265
     override val expectedTestPartTwo: Int
-        get() = TODO("Not yet implemented")
+        get() = 400
     override val expectedPartTwo: Int
-        get() = TODO("Not yet implemented")
+        get() = 39359
 
 }

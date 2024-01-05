@@ -9,29 +9,30 @@ object Day13: Solution<Int> {
     }
 
     override fun partTwo(input: Sequence<String>): Int {
-        TODO("Not yet implemented")
+        return parse(input)
+            .sumOf { columnOfReflection(it, smudge = true) + 100 * rowOfReflection(it, smudge = true) }
     }
 
-    private fun rowOfReflection(grid: List<String>): Int {
-        return reflectionPoint(grid) ?: 0
+    private fun rowOfReflection(grid: List<String>, smudge: Boolean = false): Int {
+        return reflectionPoint(grid, smudge) ?: 0
     }
 
-    private fun columnOfReflection(grid: List<String>): Int {
+    private fun columnOfReflection(grid: List<String>, smudge: Boolean = false): Int {
         val cols = columns(grid)
-        return reflectionPoint(cols) ?: 0
+        return reflectionPoint(cols, smudge) ?: 0
     }
 
-    private fun reflectionPoint(data: List<String>): Int? {
+    private fun reflectionPoint(data: List<String>, smudge: Boolean): Int? {
         val end = data.size - 1
         return (data.size / 2  downTo 1)  // left aligned
-            .firstOrNull { i -> isReflectionPoint(i, alignTo = 0, data) }
+            .firstOrNull { i -> isReflectionPoint(i, alignTo = 0, data, smudge) }
             ?.let { if (data.size % 2 == 1) it else it + 1 }
          ?: (data.size / 2  until  end) // right aligned
-            .firstOrNull { i -> isReflectionPoint(i, alignTo = end, data) }
+            .firstOrNull { i -> isReflectionPoint(i, alignTo = end, data, smudge) }
              ?.let { if (data.size % 2 == 0) it else it + 1 }
     }
 
-    private fun isReflectionPoint(col: Int, alignTo: Int, data: List<String>): Boolean {
+    private fun isReflectionPoint(col: Int, alignTo: Int, data: List<String>, smudge: Boolean): Boolean {
         val len = data.size - 1
         var start = if (alignTo == 0) 0 else col * 2  - len
         var end = if (alignTo == len) len else col * 2
@@ -48,7 +49,10 @@ object Day13: Solution<Int> {
         }
 
         val midpoint = start + (end - start) / 2
-        return (start..midpoint).all { i -> data[i] == data[end - i + start] }
+        val allowedErrors = if (smudge) 1 else 0
+        return (start..midpoint).sumOf { i ->
+            data[i].indices.count { c -> data[i][c] != data[end - i + start][c] }
+        } == allowedErrors
     }
 
 
