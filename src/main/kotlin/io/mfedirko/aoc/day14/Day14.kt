@@ -1,6 +1,7 @@
 package io.mfedirko.aoc.day14
 
-import io.mfedirko.aoc.GridUtil
+import io.mfedirko.aoc.GridUtil.rowsToColumns
+import io.mfedirko.aoc.GridUtil.columnsToRows
 import io.mfedirko.aoc.Solution
 
 private const val GROUND = '.'
@@ -20,19 +21,19 @@ object Day14: Solution<Int> {
 
     class Platform(private val initial: List<String>, private val part2: Boolean) {
         fun totalLoad(): Int {
-            val cols = northProjection(initial)
+            val cols = rowsToColumns(initial)
             return if (part2) {
                 val sampleSize = 180 // smallest sample size with cycles
                 val (_, sequence) = (0 until sampleSize).fold((cols to mutableListOf<Int>())) { acc, _ ->
                     val (grid, seq) = acc
                     val nextGrid = spinCycle(grid)
-                    val totalLoad = totalLoad(northProjection(nextGrid))
+                    val totalLoad = totalLoad(columnsToRows(nextGrid))
                     seq.add(totalLoad)
                     nextGrid to seq
                 }
                 deriveSequenceValue(sequence,  targetIndex = 1_000_000_000)
             } else {
-                val rows = northProjection(fallIntoPlaceAll(cols))
+                val rows = columnsToRows(fallIntoPlaceAll(cols))
                 totalLoad(rows)
             }
         }
@@ -80,7 +81,6 @@ object Day14: Solution<Int> {
         }
 
         private fun fallIntoPlace(col: String): String {
-            if (col.isEmpty()) return col
             val i = col.indices.firstOrNull {
                 col[it] == ROUND_ROCK || col[it] == CUBE_ROCK
             } ?: return col
@@ -93,7 +93,7 @@ object Day14: Solution<Int> {
         }
 
         private fun northProjection(initial: List<String>): List<String> {
-            return GridUtil.columns(initial)
+            return rowsToColumns(initial)
         }
         private fun southProjection(initial: List<String>): List<String> {
             return northProjection(initial).map { it.reversed() }

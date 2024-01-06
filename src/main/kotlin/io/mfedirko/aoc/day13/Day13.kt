@@ -1,6 +1,6 @@
 package io.mfedirko.aoc.day13
 
-import io.mfedirko.aoc.GridUtil.columns
+import io.mfedirko.aoc.GridUtil.rowsToColumns
 import io.mfedirko.aoc.Solution
 
 object Day13: Solution<Int> {
@@ -19,7 +19,7 @@ object Day13: Solution<Int> {
     }
 
     private fun columnOfReflection(grid: List<String>, smudge: Boolean = false): Int {
-        val cols = columns(grid)
+        val cols = rowsToColumns(grid)
         return reflectionPoint(cols, smudge) ?: 0
     }
 
