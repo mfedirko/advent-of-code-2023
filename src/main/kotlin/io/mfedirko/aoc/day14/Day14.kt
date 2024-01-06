@@ -22,7 +22,7 @@ object Day14: Solution<Int> {
         fun totalLoad(): Int {
             val cols = northProjection(initial)
             return if (useSpinCycle) {
-                val (_, sequence) = (0 until 300).fold((cols to mutableListOf<Int>())) { acc, _ ->
+                val (_, sequence) = (0 until 230).fold((cols to mutableListOf<Int>())) { acc, _ ->
                     val (grid, seq) = acc
                     val nextGrid = spinCycle(grid)
                     val totalLoad = totalLoad(northProjection(nextGrid))
@@ -39,16 +39,18 @@ object Day14: Solution<Int> {
         private fun deriveSequenceValue(sequence: List<Int>, targetIndex: Int): Int {
             val len = 5
             var i = 0
-            var matchIndex = -1
-            while (matchIndex < 0) {
+            var firstCycleIndex = -1
+            while (firstCycleIndex < 0 && i < sequence.size - len) {
                 i += len
-                matchIndex = sequence.indices.firstOrNull { index ->
+                firstCycleIndex = sequence.indices.firstOrNull { index ->
                     index > i + len
                     && (index  until index + len).all { k -> sequence[k] == sequence[i + k - index]  }
                 } ?: -1
             }
 
-            val cycleLen = matchIndex - i
+            if (firstCycleIndex == -1) error("No cycles found in sequence of length ${sequence.size}. Try with a larger sample of the sequence")
+
+            val cycleLen = firstCycleIndex - i
             val position = (targetIndex - i - 1) % cycleLen
             return sequence[i + position]
         }
