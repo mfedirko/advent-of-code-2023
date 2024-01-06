@@ -10,26 +10,27 @@ private const val ROUND_ROCK = 'O'
 object Day14: Solution<Int> {
     override fun partOne(input: Sequence<String>): Int {
         return input.toList()
-            .let { Platform(it, useSpinCycle = false).totalLoad() }
+            .let { Platform(it, part2 = false).totalLoad() }
     }
 
     override fun partTwo(input: Sequence<String>): Int {
         return input.toList()
-            .let { Platform(it, useSpinCycle = true).totalLoad() }
+            .let { Platform(it, part2 = true).totalLoad() }
     }
 
-    class Platform(private val initial: List<String>, private val useSpinCycle: Boolean) {
+    class Platform(private val initial: List<String>, private val part2: Boolean) {
         fun totalLoad(): Int {
             val cols = northProjection(initial)
-            return if (useSpinCycle) {
-                val (_, sequence) = (0 until 230).fold((cols to mutableListOf<Int>())) { acc, _ ->
+            return if (part2) {
+                val sampleSize = 180 // smallest sample size with cycles
+                val (_, sequence) = (0 until sampleSize).fold((cols to mutableListOf<Int>())) { acc, _ ->
                     val (grid, seq) = acc
                     val nextGrid = spinCycle(grid)
                     val totalLoad = totalLoad(northProjection(nextGrid))
                     seq.add(totalLoad)
                     nextGrid to seq
                 }
-                deriveSequenceValue(sequence, 1_000_000_000)
+                deriveSequenceValue(sequence,  targetIndex = 1_000_000_000)
             } else {
                 val rows = northProjection(fallIntoPlaceAll(cols))
                 totalLoad(rows)
@@ -37,7 +38,7 @@ object Day14: Solution<Int> {
         }
 
         private fun deriveSequenceValue(sequence: List<Int>, targetIndex: Int): Int {
-            val len = 5
+            val len = 3 // any value less than cycle length
             var i = 0
             var firstCycleIndex = -1
             while (firstCycleIndex < 0 && i < sequence.size - len) {
@@ -55,6 +56,19 @@ object Day14: Solution<Int> {
             return sequence[i + position]
         }
 
+        private fun spinCycle(initial: List<String>): List<String> {
+            return initial // north projection initially
+                .let { fallIntoPlaceAll(it) }
+                .let { northProjection(it) } // west
+                .let { fallIntoPlaceAll(it) }
+                .let { southProjection(it) } // south
+                .let { fallIntoPlaceAll(it) }
+                .let { southProjection(eastProjection(it)) } // east
+                .let { fallIntoPlaceAll(it) }
+                .let { northProjection(southProjection(northProjection(it))) }  // return as north projection (columns)
+
+        }
+
         private fun totalLoad(grid: List<String>): Int {
             return grid.mapIndexed { i, row ->
                 (grid.size - i) * row.count { it == ROUND_ROCK }
@@ -63,19 +77,6 @@ object Day14: Solution<Int> {
 
         private fun fallIntoPlaceAll(initial: List<String>): List<String> {
             return initial.map { fallIntoPlace(it) }.toList()
-        }
-
-        private fun spinCycle(initial: List<String>): List<String> {
-            return initial
-                .let { fallIntoPlaceAll(it) } // north
-                .let { northProjection(it) }
-                .let { fallIntoPlaceAll(it) } // west
-                .let { southProjection(it) }
-                .let { fallIntoPlaceAll(it) } // south
-                .let { southProjection(eastProjection(it)) }
-                .let { fallIntoPlaceAll(it) } // east
-                .let { northProjection(southProjection(northProjection(it))) }  // return as north projection (columns)
-
         }
 
         private fun fallIntoPlace(col: String): String {
