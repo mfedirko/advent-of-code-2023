@@ -3,55 +3,54 @@ package io.mfedirko.aoc.day14
 import io.mfedirko.aoc.GridUtil
 import io.mfedirko.aoc.Solution
 
-private const val OPEN = '.'
+private const val GROUND = '.'
 private const val CUBE_ROCK = '#'
 private const val ROUND_ROCK = 'O'
 
 object Day14: Solution<Int> {
     override fun partOne(input: Sequence<String>): Int {
         return input.toList()
-            .let { Platform(it, part2 = false).totalLoad() }
+            .let { Platform(it, useSpinCycle = false).totalLoad() }
     }
 
     override fun partTwo(input: Sequence<String>): Int {
         return input.toList()
-            .let { Platform(it, part2 = true).totalLoad() }
+            .let { Platform(it, useSpinCycle = true).totalLoad() }
     }
 
-    class Platform(private val initial: List<String>, private val part2: Boolean) {
-
+    class Platform(private val initial: List<String>, private val useSpinCycle: Boolean) {
         fun totalLoad(): Int {
             val cols = northProjection(initial)
-            return if (part2) {
-                val (grid, sequence) = (0 until 300).fold((cols to mutableListOf<Int>())) { acc, _ ->
+            return if (useSpinCycle) {
+                val (_, sequence) = (0 until 300).fold((cols to mutableListOf<Int>())) { acc, _ ->
                     val (grid, seq) = acc
                     val nextGrid = spinCycle(grid)
                     val totalLoad = totalLoad(northProjection(nextGrid))
                     seq.add(totalLoad)
                     nextGrid to seq
                 }
-                deriveValue(sequence, 1_000_000_000)
+                deriveSequenceValue(sequence, 1_000_000_000)
             } else {
                 val rows = northProjection(fallIntoPlaceAll(cols))
                 totalLoad(rows)
             }
         }
 
-        private fun deriveValue(results: List<Int>, target: Int): Int {
+        private fun deriveSequenceValue(sequence: List<Int>, targetIndex: Int): Int {
             val len = 5
             var i = 0
             var matchIndex = -1
             while (matchIndex < 0) {
                 i += len
-                matchIndex = results.indices.firstOrNull { index ->
+                matchIndex = sequence.indices.firstOrNull { index ->
                     index > i + len
-                        && (index  until index + len).all { k -> results[k] == results[i + k - index]  }
+                    && (index  until index + len).all { k -> sequence[k] == sequence[i + k - index]  }
                 } ?: -1
             }
 
             val cycleLen = matchIndex - i
-            val position = (target - i - 1) % cycleLen
-            return results[i + position]
+            val position = (targetIndex - i - 1) % cycleLen
+            return sequence[i + position]
         }
 
         private fun totalLoad(grid: List<String>): Int {
@@ -59,8 +58,6 @@ object Day14: Solution<Int> {
                 (grid.size - i) * row.count { it == ROUND_ROCK }
             }.sum()
         }
-
-
 
         private fun fallIntoPlaceAll(initial: List<String>): List<String> {
             return initial.map { fallIntoPlace(it) }.toList()
@@ -88,7 +85,7 @@ object Day14: Solution<Int> {
             return if (col[i] == CUBE_ROCK) {
                 col.substring(0, i + 1) + fallIntoPlace(col.substring(i + 1))
             } else if (i > 0) {
-                ROUND_ROCK + fallIntoPlace(col.substring(1, i) + OPEN + col.substring(i + 1))
+                ROUND_ROCK + fallIntoPlace(col.substring(1, i) + GROUND + col.substring(i + 1))
             } else ROUND_ROCK + fallIntoPlace(col.substring(1))
         }
 
