@@ -31,12 +31,13 @@ object Day15: Solution<Int> {
     private fun parsePart2(input: Sequence<String>): List<Command> {
         return parse(input).map {
             if (it.last() == '-') {
-                val label = it.substring(0, it.length - 1)
+                val label = it.substring(0 until it.length - 1)
                 Remove(label)
             } else {
                 val split = it.split("=")
                 val (label, focalLen) = split
-                Add(Lens(label, focalLen.toInt()))
+                val lens = Lens(label, focalLen.toInt())
+                Add(lens)
             }
         }
     }
@@ -46,7 +47,7 @@ object Day15: Solution<Int> {
 
         fun add(lens: Lens) {
             val hash = hash(lens.label)
-            boxes[hash].indices.firstOrNull { i -> boxes[hash][i] == lens }
+            boxes[hash].indices.firstOrNull { i -> boxes[hash][i].label == lens.label }
                 ?.let { i -> boxes[hash][i] = lens }
             ?: boxes[hash].add(lens)
         }
@@ -74,12 +75,5 @@ object Day15: Solution<Int> {
     }
 
     internal data class Lens(val label: String, val focalLength: Int) {
-        override fun equals(other: Any?): Boolean {
-            return other is Lens && other.label == label
-        }
-
-        override fun hashCode(): Int {
-            return label.hashCode()
-        }
     }
 }
