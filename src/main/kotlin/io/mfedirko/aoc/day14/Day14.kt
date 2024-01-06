@@ -10,28 +10,73 @@ private const val ROUND_ROCK = 'O'
 object Day14: Solution<Int> {
     override fun partOne(input: Sequence<String>): Int {
         return input.toList()
-            .let { Platform(it).totalLoad() }
+            .let { Platform(it, part2 = false).totalLoad() }
     }
 
     override fun partTwo(input: Sequence<String>): Int {
-        TODO("Not yet implemented")
+        return input.toList()
+            .let { Platform(it, part2 = true).totalLoad() }
     }
 
-    class Platform(initial: List<String>) {
-        private val columns by fallIntoPlace(initial)
-        val rows: List<String>
-            get() = GridUtil.columns(columns)
+    class Platform(private val initial: List<String>, private val part2: Boolean) {
 
         fun totalLoad(): Int {
-            val grid = rows
+            val cols = northProjection(initial)
+            return if (part2) {
+                val (grid, sequence) = (0 until 300).fold((cols to mutableListOf<Int>())) { acc, _ ->
+                    val (grid, seq) = acc
+                    val nextGrid = spinCycle(grid)
+                    val totalLoad = totalLoad(northProjection(nextGrid))
+                    seq.add(totalLoad)
+                    nextGrid to seq
+                }
+                deriveValue(sequence, 1_000_000_000)
+            } else {
+                val rows = northProjection(fallIntoPlaceAll(cols))
+                totalLoad(rows)
+            }
+        }
+
+        private fun deriveValue(results: List<Int>, target: Int): Int {
+            val len = 5
+            var i = 0
+            var matchIndex = -1
+            while (matchIndex < 0) {
+                i += len
+                matchIndex = results.indices.firstOrNull { index ->
+                    index > i + len
+                        && (index  until index + len).all { k -> results[k] == results[i + k - index]  }
+                } ?: -1
+            }
+
+            val cycleLen = matchIndex - i
+            val position = (target - i - 1) % cycleLen
+            return results[i + position]
+        }
+
+        private fun totalLoad(grid: List<String>): Int {
             return grid.mapIndexed { i, row ->
                 (grid.size - i) * row.count { it == ROUND_ROCK }
             }.sum()
         }
 
-        private fun fallIntoPlace(initial: List<String>) = lazy {
-            val finalState = GridUtil.columns(initial).map { fallIntoPlace(it) }.toList()
-            finalState
+
+
+        private fun fallIntoPlaceAll(initial: List<String>): List<String> {
+            return initial.map { fallIntoPlace(it) }.toList()
+        }
+
+        private fun spinCycle(initial: List<String>): List<String> {
+            return initial
+                .let { fallIntoPlaceAll(it) } // north
+                .let { northProjection(it) }
+                .let { fallIntoPlaceAll(it) } // west
+                .let { southProjection(it) }
+                .let { fallIntoPlaceAll(it) } // south
+                .let { southProjection(eastProjection(it)) }
+                .let { fallIntoPlaceAll(it) } // east
+                .let { northProjection(southProjection(northProjection(it))) }  // return as north projection (columns)
+
         }
 
         private fun fallIntoPlace(col: String): String {
@@ -45,6 +90,19 @@ object Day14: Solution<Int> {
             } else if (i > 0) {
                 ROUND_ROCK + fallIntoPlace(col.substring(1, i) + OPEN + col.substring(i + 1))
             } else ROUND_ROCK + fallIntoPlace(col.substring(1))
+        }
+
+        private fun northProjection(initial: List<String>): List<String> {
+            return GridUtil.columns(initial)
+        }
+        private fun southProjection(initial: List<String>): List<String> {
+            return northProjection(initial).map { it.reversed() }
+        }
+        private fun westProjection(initial: List<String>): List<String> {
+            return initial
+        }
+        private fun eastProjection(initial: List<String>): List<String> {
+            return westProjection(initial).map { it.reversed() }
         }
     }
 }
