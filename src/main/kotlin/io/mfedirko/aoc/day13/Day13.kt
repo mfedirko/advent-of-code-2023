@@ -1,5 +1,6 @@
 package io.mfedirko.aoc.day13
 
+import io.mfedirko.aoc.GridUtil.columns
 import io.mfedirko.aoc.Solution
 
 object Day13: Solution<Int> {
@@ -56,11 +57,6 @@ object Day13: Solution<Int> {
     }
 
 
-    private fun columns(grid: List<String>): List<String> {
-        return grid[0].indices.map { i ->
-            grid.map { row -> row[i] }.joinToString("")
-        }
-    }
 
     private fun parse(input: Sequence<String>): List<List<String>> {
        return input.joinToString("\n").split("\n\n")
