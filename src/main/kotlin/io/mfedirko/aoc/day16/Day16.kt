@@ -1,5 +1,6 @@
 package io.mfedirko.aoc.day16
 
+import io.mfedirko.aoc.GridUtil
 import io.mfedirko.aoc.Solution
 import java.util.*
 
@@ -11,7 +12,9 @@ object Day16: Solution<Int> {
     }
 
     override fun partTwo(input: Sequence<String>): Int {
-        TODO("Not yet implemented")
+        return input.toList()
+            .let { parseTiles(it) }
+            .let { Grid(it).countEnergizedTilesPart2() }
     }
 
     private fun parseTiles(data: List<String>): List<List<Tile>> {
@@ -23,20 +26,16 @@ object Day16: Solution<Int> {
     }
 
     class Grid(private val tiles: List<List<Tile>>) {
-        init {
-            moveBfs()
-        }
 
-        private fun moveBfs() {
+        private fun moveBfs(start: Tile, direction: Direction): Set<Tile> {
             val queue = LinkedList<Pair<Tile, Direction>>().apply {
-                add(tiles[0][0] to Direction.RIGHT)
+                add(start to direction)
             }
             val visited = mutableSetOf<Pair<Tile, Direction>>()
 
             while (queue.isNotEmpty()) {
                 val (tile, dir) = queue.poll()
                 visited.add(tile to dir)
-                tile.energized = true
                 for (newDir in tile.redirect(dir)) {
                     val (y, x) = tile.y to tile.x
                     val (y2, x2) = proceed(y, x, newDir)
@@ -50,6 +49,7 @@ object Day16: Solution<Int> {
                     queue.add(next)
                 }
             }
+            return visited.map { (tile, _) -> tile }.toSet()
         }
 
         private fun proceed(y: Int, x: Int, direction: Direction): Pair<Int, Int> { // y, x
@@ -61,21 +61,23 @@ object Day16: Solution<Int> {
             }
         }
 
-        private fun printGrid() {
-            return tiles.map { row ->
-                    row.map { t -> if (t.energized) '#' else '.' }.joinToString("")
-            }
-            .forEach { println(it) }
+
+        fun countEnergizedTiles(start: Tile = tiles[0][0], direction: Direction = Direction.RIGHT): Int {
+            return moveBfs(start, direction).size
         }
 
-        fun countEnergizedTiles(): Int {
-            return tiles.flatten().count { it.energized }
+        fun countEnergizedTilesPart2(): Int {
+            val leftWall = tiles.map { row -> row[0] }.map { it to Direction.RIGHT }
+            val rightWall = tiles.map { row -> row[row.size - 1] }.map { it to Direction.LEFT }
+            val topWall = tiles[0].map { it to Direction.DOWN }
+            val bottomWall = tiles[tiles.size - 1].map { it to Direction.UP }
+
+            return leftWall.union(rightWall).union(topWall.union(bottomWall))
+                .maxOf { (tile, dir) -> countEnergizedTiles(tile, dir) }
         }
     }
 
     class Tile(val x: Int, val y: Int, private val shape: Shape) {
-        var energized: Boolean = false
-
         fun redirect(dir: Direction): Sequence<Direction> {
             return when(shape) {
                 Shape.EMPTY -> sequenceOf(dir)
