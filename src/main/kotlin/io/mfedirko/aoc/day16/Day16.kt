@@ -1,6 +1,5 @@
 package io.mfedirko.aoc.day16
 
-import io.mfedirko.aoc.GridUtil
 import io.mfedirko.aoc.Solution
 import java.util.*
 
@@ -38,7 +37,7 @@ object Day16: Solution<Int> {
                 visited.add(tile to dir)
                 for (newDir in tile.redirect(dir)) {
                     val (y, x) = tile.y to tile.x
-                    val (y2, x2) = proceed(y, x, newDir)
+                    val (y2, x2) = newDir.proceed(y, x)
                     if (y2 < 0 || y2 >= tiles.size || x2 < 0 || x2 >= tiles[0].size) {
                         continue
                     }
@@ -52,16 +51,6 @@ object Day16: Solution<Int> {
             return visited.map { (tile, _) -> tile }.toSet()
         }
 
-        private fun proceed(y: Int, x: Int, direction: Direction): Pair<Int, Int> { // y, x
-            return when(direction) {
-                Direction.LEFT -> y to x - 1
-                Direction.RIGHT -> y to x + 1
-                Direction.UP -> y - 1 to x
-                Direction.DOWN -> y + 1 to x
-            }
-        }
-
-
         fun countEnergizedTiles(start: Tile = tiles[0][0], direction: Direction = Direction.RIGHT): Int {
             return moveBfs(start, direction).size
         }
@@ -73,37 +62,15 @@ object Day16: Solution<Int> {
             val bottomWall = tiles[tiles.size - 1].map { it to Direction.UP }
 
             return leftWall.union(rightWall).union(topWall.union(bottomWall))
-                .maxOf { (tile, dir) -> countEnergizedTiles(tile, dir) }
+                .maxOf { (tile, dir) ->
+                    countEnergizedTiles(tile, dir)
+                }
         }
     }
 
     class Tile(val x: Int, val y: Int, private val shape: Shape) {
-        fun redirect(dir: Direction): Sequence<Direction> {
-            return when(shape) {
-                Shape.EMPTY -> sequenceOf(dir)
-                Shape.BACK_MIRROR -> when(dir) {
-                    Direction.RIGHT -> sequenceOf(Direction.DOWN)
-                    Direction.LEFT -> sequenceOf(Direction.UP)
-                    Direction.DOWN -> sequenceOf(Direction.RIGHT)
-                    Direction.UP -> sequenceOf(Direction.LEFT)
-                }
-                Shape.FORWARD_MIRROR -> when(dir) {
-                    Direction.RIGHT -> sequenceOf(Direction.UP)
-                    Direction.LEFT -> sequenceOf(Direction.DOWN)
-                    Direction.DOWN -> sequenceOf(Direction.LEFT)
-                    Direction.UP -> sequenceOf(Direction.RIGHT)
-                }
-                Shape.VERTICAL_MIRROR -> when(dir) {
-                    Direction.RIGHT -> sequenceOf(Direction.DOWN, Direction.UP)
-                    Direction.LEFT -> sequenceOf(Direction.DOWN, Direction.UP)
-                    else -> sequenceOf(dir)
-                }
-                Shape.HORIZONTAL_MIRROR -> when(dir) {
-                   Direction.DOWN -> sequenceOf(Direction.LEFT, Direction.RIGHT)
-                   Direction.UP -> sequenceOf(Direction.LEFT, Direction.RIGHT)
-                   else -> sequenceOf(dir)
-                }
-            }
+        fun redirect(direction: Direction): Sequence<Direction> {
+            return shape.redirect(direction)
         }
 
         override fun equals(other: Any?): Boolean {
@@ -139,7 +106,43 @@ object Day16: Solution<Int> {
         }
     }
 
+    private fun Shape.redirect(dir: Direction): Sequence<Direction> {
+        return when(this) {
+            Shape.EMPTY -> sequenceOf(dir)
+            Shape.BACK_MIRROR -> when(dir) {
+                Direction.RIGHT -> sequenceOf(Direction.DOWN)
+                Direction.LEFT -> sequenceOf(Direction.UP)
+                Direction.DOWN -> sequenceOf(Direction.RIGHT)
+                Direction.UP -> sequenceOf(Direction.LEFT)
+            }
+            Shape.FORWARD_MIRROR -> when(dir) {
+                Direction.RIGHT -> sequenceOf(Direction.UP)
+                Direction.LEFT -> sequenceOf(Direction.DOWN)
+                Direction.DOWN -> sequenceOf(Direction.LEFT)
+                Direction.UP -> sequenceOf(Direction.RIGHT)
+            }
+            Shape.VERTICAL_MIRROR -> when(dir) {
+                Direction.RIGHT -> sequenceOf(Direction.DOWN, Direction.UP)
+                Direction.LEFT -> sequenceOf(Direction.DOWN, Direction.UP)
+                else -> sequenceOf(dir)
+            }
+            Shape.HORIZONTAL_MIRROR -> when(dir) {
+                Direction.DOWN -> sequenceOf(Direction.LEFT, Direction.RIGHT)
+                Direction.UP -> sequenceOf(Direction.LEFT, Direction.RIGHT)
+                else -> sequenceOf(dir)
+            }
+        }
+    }
+
     enum class Direction {
         UP, DOWN, LEFT, RIGHT
+    }
+    private fun Direction.proceed(y: Int, x: Int): Pair<Int, Int> { // y, x
+        return when(this) {
+            Direction.LEFT -> y to x - 1
+            Direction.RIGHT -> y to x + 1
+            Direction.UP -> y - 1 to x
+            Direction.DOWN -> y + 1 to x
+        }
     }
 }
