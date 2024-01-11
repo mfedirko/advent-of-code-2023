@@ -1,5 +1,7 @@
 package io.mfedirko.aoc.day16
 
+import io.mfedirko.aoc.Coord
+import io.mfedirko.aoc.Direction
 import io.mfedirko.aoc.Solution
 import java.util.*
 
@@ -68,27 +70,9 @@ object Day16: Solution<Int> {
         }
     }
 
-    class Tile(val x: Int, val y: Int, private val shape: Shape) {
+    class Tile(x: Int, y: Int, private val shape: Shape): Coord<Tile>(x, y) {
         fun redirect(direction: Direction): Sequence<Direction> {
             return shape.redirect(direction)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Tile
-
-            if (x != other.x) return false
-            if (y != other.y) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = x
-            result = 31 * result + y
-            return result
         }
     }
 
@@ -134,9 +118,6 @@ object Day16: Solution<Int> {
         }
     }
 
-    enum class Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
     private fun Direction.proceed(y: Int, x: Int): Pair<Int, Int> { // y, x
         return when(this) {
             Direction.LEFT -> y to x - 1
