@@ -6,12 +6,13 @@ import io.mfedirko.aoc.Solution
 import java.util.*
 
 
-private const val INFINITY = 9999999
-
 object Day17 : Solution<Int> {
     override fun partOne(input: Sequence<String>): Int {
-        val cost: Array<IntArray> = parse(input)
-        return minCostPath(cost)
+        return parse(input).let { minCostPath(it) }
+    }
+
+    override fun partTwo(input: Sequence<String>): Int {
+        return parse(input).let { minCostPath(it, minSteps = 4, maxSteps = 10) }
     }
 
     private fun parse(input: Sequence<String>): Array<IntArray> {
@@ -24,8 +25,10 @@ object Day17 : Solution<Int> {
     }
 
 
+
+
     // Dijkstra's algorithm
-    private fun minCostPath(heatCosts: Array<IntArray>): Int {
+    private fun minCostPath(heatCosts: Array<IntArray>, minSteps: Int = 1, maxSteps: Int = 3): Int {
         val n = heatCosts.size
         val m = heatCosts[0].size
         val visited = mutableSetOf<Pair<Coord<HeatCoord>, Direction>>()
@@ -44,7 +47,7 @@ object Day17 : Solution<Int> {
             if (visited.contains(curr to dir)) continue
             visited.add(curr to dir)
             for (nextDir in setOf(dir.turnLeft(), dir.turnRight())) {
-                for (steps in (1..3)) {
+                for (steps in (1..maxSteps)) {
                     val neighbor = curr.neighborTo(nextDir, steps)
                     if (!neighbor.isInsideGrid(heatCosts)) continue
                     if (visited.contains(neighbor to nextDir)) continue
@@ -52,24 +55,19 @@ object Day17 : Solution<Int> {
                     val alt = curr.allNeighborsTo(nextDir, steps).fold(currCost) {
                         sum, neighb -> sum + heatCosts[neighb.y][neighb.x]
                     }
-                    val nextState = State(neighbor, nextDir, alt)
-                    queue.remove(nextState)
-                    queue.add(nextState)
+                    if (steps >= minSteps) {
+                        val nextState = State(neighbor, nextDir, alt)
+                        queue.remove(nextState)
+                        queue.add(nextState)
+                    }
                 }
             }
         }
         error("Did not arrive at end node")
     }
 
-
-
-
     private fun print(cost: Array<IntArray>) {
         cost.forEach { row -> println(row.joinToString(" ")) }
-    }
-
-    override fun partTwo(input: Sequence<String>): Int {
-        TODO("Not yet implemented")
     }
 
     fun Coord<HeatCoord>.isInsideGrid(grid: Array<IntArray>): Boolean {
